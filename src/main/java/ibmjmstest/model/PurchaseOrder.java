@@ -2,19 +2,13 @@
 package ibmjmstest.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OrderColumn;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
@@ -34,10 +28,6 @@ public class PurchaseOrder implements Serializable {
     @Id @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
     private String comment;
-    @ElementCollection(fetch=FetchType.EAGER)
-    @OrderColumn(name="index")
-    @Column(nullable=false)
-    private List<Long> orderItemIds;
     private Date orderDate;
 
     /**
@@ -115,29 +105,6 @@ public class PurchaseOrder implements Serializable {
      */
     public void setComment(String comment) {
         this.comment = comment;
-    }
-
-    /**
-     * Gets the value of the orderItemLists property.
-     * 
-     * @return {@link OrderItemsType }
-     *     
-     */
-    public List<Long> getOrderItemIds() {
-        if ( orderItemIds == null ) {
-            orderItemIds = new ArrayList<Long>();
-        }
-        return orderItemIds;
-    }
-
-    /**
-     * Sets the value of the orderItemsType property.
-     * 
-     * @param orderItemList {@link OrderItemsType }
-     *     
-     */
-    public void setOrderItemIds(List<Long> orderItemIds) {
-        this.orderItemIds = orderItemIds;
     }
 
     /**

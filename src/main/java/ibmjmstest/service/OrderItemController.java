@@ -1,12 +1,14 @@
 package ibmjmstest.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ibmjmstest.integration.OrderItemGateway;
-import ibmjmstest.types.OrderItemType;
+import ibmjmstest.model.OrderItem;
 
 @RestController
 public class OrderItemController {
@@ -15,8 +17,8 @@ public class OrderItemController {
 	private OrderItemGateway gateway;
 
 	@RequestMapping(path = "/oiv")
-	public OrderItemType index(@RequestParam Long id) {
-		OrderItemType oit = gateway.getOrderItemType(id);
-		return oit;
+	public List<OrderItem> index(@RequestParam Long purchaseOrderId) {
+		List<OrderItem> orderItems = gateway.getOrderItems(purchaseOrderId);
+		return orderItems;
 	}
 }
