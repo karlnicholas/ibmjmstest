@@ -8,6 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import ibmjmstest.types.ProductType;
+
 /**
  * Entity implementation class for Entity: Product
  * @author Karl Nicholas
@@ -24,6 +26,34 @@ public class Product implements Serializable {
     private String description;
     private String category;
     
+    /**
+     * Fill out properties from PurchaseOrderType. Copies all dependencies.   
+     * @param productType {@link ProductType}
+     * @return Product
+     */
+    public Product fromProductType(ProductType productType) {
+        this.id = productType.getId();
+        this.sku = productType.getSku();
+        this.name = productType.getName();
+        this.description = productType.getDescription();
+        this.category = productType.getCategory();
+        return this;
+    }
+
+    /**
+     * Create and return ProductType representation. 
+     * @return {@link ProductType}
+     */
+    public ProductType asProductType() {
+        ProductType productType = new ProductType(); 
+        productType.setId(id);
+        productType.setSku(sku);
+        productType.setName(name);
+        productType.setDescription(description);
+        productType.setCategory(category);
+        return productType;
+    }
+
     /**
      * Gets the value of the id property.
      * 

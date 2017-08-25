@@ -4,6 +4,7 @@ package ibmjmstest.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -14,6 +15,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OrderColumn;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+
+import ibmjmstest.types.OrderItemListType;
+import ibmjmstest.types.PurchaseOrderType;
 
 /**
  * PurchaseOrder model object.
@@ -33,6 +39,39 @@ public class PurchaseOrder implements Serializable {
     @Column(nullable=false)
     private List<Long> orderItemIds;
     private Date orderDate;
+
+    /**
+     * Fill out properties from PurchaseOrderType. DOES NOT Copy all dependencies.   
+     * @param purchaseOrderType
+     * @return {@link PurchaseOrder} 
+     */
+    public PurchaseOrder fromPurchaseOrderType(PurchaseOrderType purchaseOrderType) {
+        id = purchaseOrderType.getId();
+        comment = purchaseOrderType.getComment();
+        orderDate = purchaseOrderType.getOrderDate().toGregorianCalendar().getTime();
+        return this;
+    }
+
+    /**
+     * Create and return PurchaseOrderType representation. 
+     * @return {@link PurchaseOrderType}
+     * @throws DatatypeConfigurationException
+     */
+    public PurchaseOrderType asPurchaseOrderType() throws DatatypeConfigurationException {
+        PurchaseOrderType purchaseOrderType = new PurchaseOrderType(); 
+        purchaseOrderType.setId(id);
+        purchaseOrderType.setComment(comment);
+        // do the list of OrderItems
+        OrderItemListType orderItemListType = new OrderItemListType();
+        purchaseOrderType.setOrderItemListType(orderItemListType);
+        // convert date
+        //TODO: sort out date format in xsd
+            GregorianCalendar gregory = new GregorianCalendar();
+            gregory.setTimeInMillis(orderDate.getTime());
+            purchaseOrderType.setOrderDate(
+                    DatatypeFactory.newInstance().newXMLGregorianCalendar(gregory));
+        return purchaseOrderType;
+    }
 
     /**
      * Gets the value of the id property.

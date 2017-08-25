@@ -8,10 +8,18 @@ import org.springframework.integration.config.EnableIntegration;
 @EnableIntegration
 public class IntConfiguration {
 
+	DirectChannel catalogChannel() {
+		return new DirectChannel();
+	}
+	
 	DirectChannel productChannel() {
 		return new DirectChannel();
 	}
 	
+	DirectChannel orderItemChannel() {
+		return new DirectChannel();
+	}
+
 	DirectChannel purchaseOrderChannel() {
 		return new DirectChannel();
 	}

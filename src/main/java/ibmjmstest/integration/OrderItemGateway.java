@@ -3,10 +3,10 @@ package ibmjmstest.integration;
 import org.springframework.integration.annotation.Gateway;
 import org.springframework.integration.annotation.MessagingGateway;
 
-import ibmjmstest.model.Product;
+import ibmjmstest.types.OrderItemType;
 
 @MessagingGateway
-public interface ProductGateway {
-	@Gateway(requestChannel = "productChannel")
-	Product  getProduct(Long productId);
+public interface OrderItemGateway {
+	@Gateway(requestChannel = "orderItemChannel")
+	OrderItemType getOrderItemType(Long id);
 }
