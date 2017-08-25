@@ -14,6 +14,7 @@ public class PurchaseOrderHandler {
 
 	@ServiceActivator(inputChannel="purchaseOrderChannel")
 	public PurchaseOrder getPurchaseOrder(Long id) {
+		System.out.println( "getPurchaseOrder: " + Thread.currentThread().toString() );
 		PurchaseOrder purchaseOrder = repository.findOne(id);
 		return purchaseOrder;
 	}

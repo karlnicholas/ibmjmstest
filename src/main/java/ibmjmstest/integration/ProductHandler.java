@@ -14,6 +14,7 @@ public class ProductHandler {
 
 	@ServiceActivator(inputChannel="productChannel")
 	public Product getProduct(Long id) {
+		System.out.println( "getProduct: " + Thread.currentThread().toString() );
 		Product product = repository.findOne(id);
 		return product;
 	}

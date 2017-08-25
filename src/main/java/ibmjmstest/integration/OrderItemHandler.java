@@ -14,11 +14,9 @@ public class OrderItemHandler {
 	@Autowired
 	private OrderItemRepository repository;
 
-	@Autowired
-	private ProductGateway productGateway;
-
 	@ServiceActivator(inputChannel="orderItemChannel")
 	public List<OrderItem> getOrderItems(Long purchaseOrderId) {
+		System.out.println( "getOrderItems: " + Thread.currentThread().toString() );
 		List<OrderItem> orderItems = repository.findAllByPurchaseOrderId(purchaseOrderId);
 		return orderItems;
 	}
