@@ -3,40 +3,40 @@ package ibmjmstest.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.IdClass;
 
 import ibmjmstest.types.OrderItemType;
 
 /**
  * OrderItem model object
+ * 
  * @author Karl Nicholas
  * @version 2017.04.02
  *
  */
 @Entity
-@IdClass(OrderItemPK.class)
 public class OrderItem implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    private Long purchaseOrderId;
-    @Id
-    private Long productId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private Product product;
     private int quantity;
     private BigDecimal itemPrice;
-    @Column(nullable=false)
-    private Long index;
 
     /**
-     * Copies properties from @{link OrderItemType}. DOES NOT copy all dependencies.
+     * Copies properties from @{link OrderItemType}. Copies all dependencies.
      * @param orderItemType @{link OrderItemType}
      * @return {@link OrderItem}
      */
     public OrderItem fromOrderItemType(OrderItemType orderItemType ) {
+        id = orderItemType.getId();
         quantity = orderItemType.getQuantity();
         itemPrice = orderItemType.getItemPrice();
+        product = new Product().fromProductType(orderItemType.getProductType());
         return this;
     }
     
@@ -46,36 +46,14 @@ public class OrderItem implements Serializable {
      */
     public OrderItemType asOrderItemType() {
         OrderItemType orderItemType = new OrderItemType();
+        orderItemType.setId(id);
         orderItemType.setQuantity(quantity);
         orderItemType.setItemPrice(itemPrice);
+        orderItemType.setProductType( product.asProductType() );
         return orderItemType;
     }
 
-	public Long getPurchaseOrderId() {
-		return purchaseOrderId;
-	}
-
-	public void setPurchaseOrderId(Long purchaseOrderId) {
-		this.purchaseOrderId = purchaseOrderId;
-	}
-
-	public Long getProductId() {
-		return productId;
-	}
-
-	public void setProductId(Long productId) {
-		this.productId = productId;
-	}
-
-	public Long getIndex() {
-		return index;
-	}
-
-	public void setIndex(Long index) {
-		this.index = index;
-	}
-
-	/**
+    /**
      * Gets the value of the quantity property.
      * 
      */
@@ -95,7 +73,7 @@ public class OrderItem implements Serializable {
      * Gets the value of the itemPrice property.
      * 
      * @return {@link BigDecimal }
-     *     
+     * 
      */
     public BigDecimal getItemPrice() {
         return itemPrice;
@@ -104,10 +82,19 @@ public class OrderItem implements Serializable {
     /**
      * Sets the value of the itemPrice property.
      * 
-     * @param value {@link BigDecimal }
-     *     
+     * @param value
+     *            {@link BigDecimal }
+     * 
      */
     public void setItemPrice(BigDecimal value) {
         this.itemPrice = value;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
     }
 }

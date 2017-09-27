@@ -1,24 +1,23 @@
 package ibmjmstest.service;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import ibmjmstest.integration.OrderItemGateway;
-import ibmjmstest.model.OrderItem;
+import ibmjmstest.repository.OrderItemRepository;
+import ibmjmstest.types.OrderItemType;
 
 @RestController
 public class OrderItemController {
 
-	@Autowired
-	private OrderItemGateway gateway;
+    @Autowired
+    private OrderItemRepository repository;
 
-	@RequestMapping(path = "/oiv")
-	public List<OrderItem> index(@RequestParam Long purchaseOrderId) {
-		List<OrderItem> orderItems = gateway.getOrderItems(purchaseOrderId);
-		return orderItems;
-	}
+    @RequestMapping(path = "/oiv")
+    public OrderItemType index(@RequestParam Long id) {
+
+        System.out.println("getOrderItems: " + Thread.currentThread().toString());
+        return repository.findOne(id).asOrderItemType();
+    }
 }
