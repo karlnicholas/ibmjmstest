@@ -17,12 +17,8 @@ import javax.persistence.NamedEntityGraphs;
 import javax.persistence.NamedSubgraph;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
-import javax.persistence.PersistenceUnitUtil;
-import javax.persistence.PersistenceUtil;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
-
-import org.hibernate.Hibernate;
 
 import ibmjmstest.types.OrderItemListType;
 import ibmjmstest.types.OrderItemType;
