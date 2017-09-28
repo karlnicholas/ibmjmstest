@@ -10,8 +10,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedEntityGraphs;
+import javax.persistence.NamedSubgraph;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
+import javax.persistence.PersistenceUnitUtil;
+import javax.persistence.PersistenceUtil;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
@@ -29,6 +35,23 @@ import ibmjmstest.types.PurchaseOrderType;
  *
  */
 @Entity
+@NamedEntityGraphs({ 
+	@NamedEntityGraph(
+		name = "fetchOrderItemList", 
+		attributeNodes = {
+			@NamedAttributeNode(value = "orderItemList", subgraph = "fetchProduct") 
+		}, 
+		subgraphs = {
+			@NamedSubgraph(
+				name = "fetchProduct", 
+				type = OrderItem.class, 
+				attributeNodes = {
+					@NamedAttributeNode(value = "product") 
+				}
+			) 
+		}
+	) 
+})
 public class PurchaseOrder implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -36,7 +59,7 @@ public class PurchaseOrder implements Serializable {
     private Long id;
     private String comment;
     private Date orderDate;
-    @OneToMany
+    @OneToMany(mappedBy="purchaseOrder")
     @OrderColumn
     private List<OrderItem> orderItemList;
 
@@ -64,26 +87,38 @@ public class PurchaseOrder implements Serializable {
      * @return {@link PurchaseOrderType}
      * @throws DatatypeConfigurationException
      */
-    public PurchaseOrderType asPurchaseOrderType() throws DatatypeConfigurationException {
+    public PurchaseOrderType asPurchaseOrderTypeShallow() throws DatatypeConfigurationException {
+        PurchaseOrderType purchaseOrderType = new PurchaseOrderType(); 
+        purchaseOrderType.setId(id);
+        purchaseOrderType.setComment(comment);
+        // convert date
+		GregorianCalendar gregory = new GregorianCalendar();
+		gregory.setTimeInMillis(orderDate.getTime());
+		purchaseOrderType.setOrderDate(DatatypeFactory.newInstance().newXMLGregorianCalendar(gregory));
+        return purchaseOrderType;
+    }
+
+    /**
+     * Create and return PurchaseOrderType representation. 
+     * @return {@link PurchaseOrderType}
+     * @throws DatatypeConfigurationException
+     */
+    public PurchaseOrderType asPurchaseOrderTypeDeep() throws DatatypeConfigurationException {
         PurchaseOrderType purchaseOrderType = new PurchaseOrderType(); 
         purchaseOrderType.setId(id);
         purchaseOrderType.setComment(comment);
         // do the list of OrderItems
         OrderItemListType orderItemListType = new OrderItemListType();
-        // need to deal with lazy initialization issues.        
-        if ( orderItemList != null && Hibernate.isInitialized(orderItemList) ) {
-            for ( OrderItem orderItem : orderItemList) {
-                OrderItemType orderItemType = orderItem.asOrderItemType();
-                orderItemListType.getOrderItemType().add(orderItemType);
-            }
+        for ( OrderItem orderItem : orderItemList) {
+            OrderItemType orderItemType = orderItem.asOrderItemType();
+            orderItemListType.getOrderItemType().add(orderItemType);
         }
         purchaseOrderType.setOrderItemListType(orderItemListType);
-        // convert date
-        //TODO: sort out date format in xsd
-            GregorianCalendar gregory = new GregorianCalendar();
-            gregory.setTimeInMillis(orderDate.getTime());
-            purchaseOrderType.setOrderDate(
-                    DatatypeFactory.newInstance().newXMLGregorianCalendar(gregory));
+		// convert date
+		// TODO: sort out date format in xsd
+		GregorianCalendar gregory = new GregorianCalendar();
+		gregory.setTimeInMillis(orderDate.getTime());
+		purchaseOrderType.setOrderDate(DatatypeFactory.newInstance().newXMLGregorianCalendar(gregory));
         return purchaseOrderType;
     }
 

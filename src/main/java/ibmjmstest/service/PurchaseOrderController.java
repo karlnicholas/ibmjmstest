@@ -1,6 +1,7 @@
 package ibmjmstest.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,7 +29,7 @@ public class PurchaseOrderController {
     public PurchaseOrderListType getPurchaseOrderList() throws Exception {
         PurchaseOrderListType purchaseOrderListType = new PurchaseOrderListType();
         for(PurchaseOrder purchaseOrder : repository.findAll() ){
-            purchaseOrderListType.getPurchaseOrderType().add( purchaseOrder.asPurchaseOrderType() );
+            purchaseOrderListType.getPurchaseOrderType().add( purchaseOrder.asPurchaseOrderTypeShallow() );
         }
         return purchaseOrderListType;
     }
@@ -39,11 +40,11 @@ public class PurchaseOrderController {
      * @return {@link PurchaseOrderType}
      */
     @RequestMapping(path = "getpurchaseorder/{id}", produces={"application/json"})
-    public PurchaseOrderType getPurchaseOrder(@RequestParam("id") Long id) throws Exception {
+    public PurchaseOrderType getPurchaseOrder(@PathVariable("id") Long id) throws Exception {
         // retrieve PurchaseOrder information based on the id supplied 
-        PurchaseOrder purchaseOrder = repository.findOne(id);            
+        PurchaseOrder purchaseOrder = repository.findById(id);            
         if ( purchaseOrder == null ) throw new IllegalArgumentException("PurchaseOrder not found for id: " + id);
-        PurchaseOrderType purchaseOrderType = purchaseOrder.asPurchaseOrderType();
+        PurchaseOrderType purchaseOrderType = purchaseOrder.asPurchaseOrderTypeDeep();
         return purchaseOrderType;
     }
  
