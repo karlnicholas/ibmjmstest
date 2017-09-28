@@ -29,8 +29,10 @@ import ibmjmstest.model.Product;
 import ibmjmstest.model.PurchaseOrder;
 import ibmjmstest.repository.ProductRepository;
 import ibmjmstest.repository.PurchaseOrderRepository;
-import ibmjmstest.service.CatalogController;
-import ibmjmstest.service.PurchaseOrderController;
+import ibmjmstest.service.ProductService;
+import ibmjmstest.service.ProductServiceImpl;
+import ibmjmstest.service.PurchaseOrderService;
+import ibmjmstest.service.PurchaseOrderServiceImpl;
 import ibmjmstest.types.OrderItemType;
 import ibmjmstest.types.ProductType;
 import ibmjmstest.types.PurchaseOrderType;
@@ -45,9 +47,9 @@ public class ServiceTest {
     private PurchaseOrderRepository purchaseOrderRepository;
 
     @Autowired
-    private CatalogController catalogController;
+    private ProductService productService;
     @Autowired
-    private PurchaseOrderController purchaseOrderController;
+    private PurchaseOrderService purchaseOrderService;
     
     private Product product;
     private PurchaseOrder purchaseOrder;
@@ -61,6 +63,8 @@ public class ServiceTest {
     @Before
     public void setupMock() {
         MockitoAnnotations.initMocks(this);
+        ((ProductServiceImpl)productService).setRepository(productRepository);
+        ((PurchaseOrderServiceImpl)purchaseOrderService).setRepository(purchaseOrderRepository);
 
         product = new Product();
         product.setId(1L);
@@ -69,6 +73,7 @@ public class ServiceTest {
         purchaseOrder = new PurchaseOrder();
         purchaseOrder.setId(1L);
         purchaseOrder.setComment("First Order");
+        purchaseOrder.setOrderItemList(new ArrayList<>());
         try {
             purchaseOrder.setOrderDate(new SimpleDateFormat("yyyy-MM-dd").parse("2017-03-31"));
         } catch (ParseException e) {
@@ -105,44 +110,38 @@ public class ServiceTest {
 
     @Test
     public void testProduct() throws Exception {
-/*
         List<Product> productList = new ArrayList<>();
         productList.add(product);
         
         when(productRepository.findByCategory(widget)).thenReturn(productList);
-        catalogController.index(widget);
+        productService.index(widget);
         verify(productRepository).findByCategory(widget);
         verifyZeroInteractions(productRepository);
 
         when(productRepository.findAll()).thenReturn(productList);
-        catalogController.index(null);
+        productService.index(null);
         verify(productRepository).findAll();
         verifyZeroInteractions(productRepository);
-*/
-    	assertTrue(true);
     }
 
     @Test
     public void testPurchaseOrder() throws Exception {
-/*
         // make a purchase order list
         List<PurchaseOrder> purchaseOrderList = new ArrayList<>();
         purchaseOrderList.add(purchaseOrder);
 
         when(purchaseOrderRepository.findById(1L)).thenReturn(purchaseOrder);
-        purchaseOrderController.getPurchaseOrder(1L);
+        purchaseOrderService.getPurchaseOrder(1L);
         verify(purchaseOrderRepository).findById(1L);
         verifyNoMoreInteractions(purchaseOrderRepository);
 
         when(purchaseOrderRepository.findAll()).thenReturn(purchaseOrderList);
-        purchaseOrderController.getPurchaseOrderList();
+        purchaseOrderService.getPurchaseOrderList();
         verify(purchaseOrderRepository).findAll();
         verifyNoMoreInteractions(purchaseOrderRepository);
 
         // need to test create and update with rest
         // create the services create new objects
- */
-    	assertTrue(true);
     }
 
 }

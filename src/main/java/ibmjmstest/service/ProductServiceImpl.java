@@ -10,12 +10,20 @@ import ibmjmstest.repository.ProductRepository;
 import ibmjmstest.types.ProductListType;
 
 @RestController
-public class CatalogController {
+public class ProductServiceImpl implements ProductService {
 
-    @Autowired
+	@Autowired
     private ProductRepository repository;
 
-    @RequestMapping(path = "/productservice")
+    public void setRepository(ProductRepository repository) {
+		this.repository = repository;
+	}
+
+    /* (non-Javadoc)
+	 * @see ibmjmstest.service.ProductService#index(java.lang.String)
+	 */
+    @Override
+	@RequestMapping(path = "/productservice")
     public ProductListType index(@RequestParam(required = false) String category) {
         ProductListType  plt = new ProductListType();
         Iterable<Product> pl;

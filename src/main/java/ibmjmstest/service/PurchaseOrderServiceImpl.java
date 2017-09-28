@@ -12,19 +12,22 @@ import ibmjmstest.types.PurchaseOrderListType;
 import ibmjmstest.types.PurchaseOrderType;
 
 @RestController
-public class PurchaseOrderController {
+public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
-    @Autowired
+	@Autowired
     private PurchaseOrderRepository repository;
+
+    public void setRepository(PurchaseOrderRepository repository) {
+		this.repository = repository;
+	}
 
     // Basic operations for PurchaseOrder Service
  
-    /**
-     * REST endpoint for getPurchaseOrderList
-     * /rest/purchaseorderservice/getpurchaseorderlist
-     * @return {@link PurchaseOrderListType}
-     */
-    @RequestMapping(path = "getpurchaseorderlist", produces={"application/json"})
+    /* (non-Javadoc)
+	 * @see ibmjmstest.service.PurchaseOrderService#getPurchaseOrderList()
+	 */
+    @Override
+	@RequestMapping(path = "getpurchaseorderlist", produces={"application/json"})
     public PurchaseOrderListType getPurchaseOrderList() throws Exception {
         PurchaseOrderListType purchaseOrderListType = new PurchaseOrderListType();
         for(PurchaseOrder purchaseOrder : repository.findAll() ){
@@ -33,12 +36,11 @@ public class PurchaseOrderController {
         return purchaseOrderListType;
     }
 
-    /**
-     * REST endpoint for getPurchaseOrder
-     * /rest/purchaseorderservice/getpurchaseorder/{id}
-     * @return {@link PurchaseOrderType}
-     */
-    @RequestMapping(path = "getpurchaseorder/{id}", produces={"application/json"})
+    /* (non-Javadoc)
+	 * @see ibmjmstest.service.PurchaseOrderService#getPurchaseOrder(java.lang.Long)
+	 */
+    @Override
+	@RequestMapping(path = "getpurchaseorder/{id}", produces={"application/json"})
     public PurchaseOrderType getPurchaseOrder(@PathVariable("id") Long id) throws Exception {
         // retrieve PurchaseOrder information based on the id supplied 
         PurchaseOrder purchaseOrder = repository.findById(id);            
@@ -47,12 +49,11 @@ public class PurchaseOrderController {
         return purchaseOrderType;
     }
  
-    /**
-     * REST endpoint for addPurchaseOrder
-     * /rest/purchaseorderservice/addpurchaseorder
-     * @return {@link String}
-     */
-    @RequestMapping(
+    /* (non-Javadoc)
+	 * @see ibmjmstest.service.PurchaseOrderService#createPurchaseOrder(ibmjmstest.types.PurchaseOrderType)
+	 */
+    @Override
+	@RequestMapping(
             path = "addpurchaseorder", 
             produces={"application/text"}, 
             consumes={"application/json"}, 
@@ -63,12 +64,11 @@ public class PurchaseOrderController {
         return "created";
     }
  
-    /**
-     * REST endpoint for updatepurchaseorder
-     * /rest/purchaseorderservice/updatepurchaseorder
-     * @return {@link String}
-     */
-    @RequestMapping(
+    /* (non-Javadoc)
+	 * @see ibmjmstest.service.PurchaseOrderService#updatePurchaseOrder(ibmjmstest.types.PurchaseOrderType)
+	 */
+    @Override
+	@RequestMapping(
             path = "addpurchaseorder", 
             produces={"application/text"}, 
             consumes={"application/json"}, 
