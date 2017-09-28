@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -59,7 +60,7 @@ public class PurchaseOrder implements Serializable {
     private Long id;
     private String comment;
     private Date orderDate;
-    @OneToMany(mappedBy="purchaseOrder")
+    @OneToMany(mappedBy="purchaseOrder", cascade=CascadeType.ALL)
     @OrderColumn
     private List<OrderItem> orderItemList;
 
